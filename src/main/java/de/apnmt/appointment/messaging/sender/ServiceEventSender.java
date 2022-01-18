@@ -21,7 +21,7 @@ public class ServiceEventSender implements ApnmtEventSender<ServiceEventDTO> {
 
     @Override
     public void send(String topic, ApnmtEvent<ServiceEventDTO> event) {
-        log.info("Send event {} to kafka topic {}", event, topic);
+        log.info("Send event {} to SNS topic {}", event, topic);
         notificationMessagingTemplate.convertAndSend(topic, event);
     }
 }

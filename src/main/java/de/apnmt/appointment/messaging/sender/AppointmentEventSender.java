@@ -21,7 +21,7 @@ public class AppointmentEventSender implements ApnmtEventSender<AppointmentEvent
 
     @Override
     public void send(String topic, ApnmtEvent<AppointmentEventDTO> event) {
-        this.log.info("Send event {} to kafka topic {}", event, topic);
+        this.log.info("Send event {} to SNS topic {}", event, topic);
         notificationMessagingTemplate.convertAndSend(topic, event);
     }
 }
