@@ -1,5 +1,7 @@
 package de.apnmt.appointment.messaging.sender;
 
+import de.apnmt.aws.common.config.AwsCloudProperties;
+import de.apnmt.aws.common.util.TracingUtil;
 import de.apnmt.common.event.ApnmtEvent;
 import de.apnmt.common.event.value.AppointmentEventDTO;
 import de.apnmt.common.sender.ApnmtEventSender;
@@ -14,14 +16,18 @@ public class AppointmentEventSender implements ApnmtEventSender<AppointmentEvent
     private static final Logger log = LoggerFactory.getLogger(AppointmentEventSender.class);
 
     private NotificationMessagingTemplate notificationMessagingTemplate;
+    private AwsCloudProperties awsCloudProperties;
 
-    public AppointmentEventSender(NotificationMessagingTemplate notificationMessagingTemplate) {
+    public AppointmentEventSender(NotificationMessagingTemplate notificationMessagingTemplate, AwsCloudProperties awsCloudProperties) {
         this.notificationMessagingTemplate = notificationMessagingTemplate;
+        this.awsCloudProperties = awsCloudProperties;
     }
 
     @Override
     public void send(String topic, ApnmtEvent<AppointmentEventDTO> event) {
         this.log.info("Send event {} to SNS topic {}", event, topic);
+        String traceId = TracingUtil.createTraceId(awsCloudProperties.getTracing().getXRay().isEnabled());
+        event.setTraceId(traceId);
         notificationMessagingTemplate.convertAndSend(topic, event);
     }
 }
